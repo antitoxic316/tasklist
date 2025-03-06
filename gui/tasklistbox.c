@@ -7,5 +7,5 @@ void tasklistbox_add_task(){
 
     // dialog
     // create struct Task
-    tasklist_add(Task task);
+    tasklist_add(new_task);
 }
