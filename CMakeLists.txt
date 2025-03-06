@@ -14,6 +14,3 @@ target_include_directories(tasklist PUBLIC
                           )
 
 target_link_libraries(gui PUBLIC core)
-
-# DEBUG
-set(G_MESSAGES_DEBUG all)

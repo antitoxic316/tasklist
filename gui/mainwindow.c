@@ -1,11 +1,13 @@
 #include "mainwindow.h"
 
+#include "config.h"
+
 void activate_mainwindow(GtkApplication *app, gpointer user_data){
   GtkBuilder *builder = gtk_builder_new();
-  gboolean ui_load_res = gtk_builder_add_from_file(builder, "gui/ui/mainwindow.ui", NULL);
+  gboolean ui_load_res = gtk_builder_add_from_file(builder, MAINWINDOW_UI_FILE_PATH, NULL);
 
   GtkCssProvider *cssParser = gtk_css_provider_new();
-  gtk_css_provider_load_from_path(cssParser, "gui/css/mainwindow.css");
+  gtk_css_provider_load_from_path(cssParser, MAINWINDOW_CSS_FILE_PATH);
   gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(cssParser), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
   if (!ui_load_res) {
