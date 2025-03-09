@@ -1,4 +1,4 @@
-add_library(gui mainwindow.c tasklistbox.c)
+add_library(gui mainwindow.c)
 
 include_directories(${CMAKE_SOURCE_DIR}/core)
 
@@ -7,6 +7,6 @@ pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
 
 target_link_libraries(gui PUBLIC PkgConfig::GTK4)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/path_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/path_config.h @ONLY)
 
 target_include_directories(gui PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

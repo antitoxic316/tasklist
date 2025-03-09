@@ -1,1 +1,1 @@
-add_library(core task.c tasklists-container.c)
+add_library(core task.c tasklist_serializer.c)

@@ -15,7 +15,7 @@
               </object>
             </child>
 
-             <child>
+            <child>
               <object id="leftPanelSpacer" class="GtkBox">
                 <property name="vexpand">TRUE</property>
               </object>

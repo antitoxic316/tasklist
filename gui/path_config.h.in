@@ -4,3 +4,5 @@
 
 #define MAINWINDOW_UI_FILE_PATH UI_FILES_PATH "/mainwindow.ui"
 #define MAINWINDOW_CSS_FILE_PATH CSS_FILES_PATH "/mainwindow.css"
+
+#define TASK_INIT_DIALOG_UI_FILE_PATH UI_FILES_PATH "/dialogwindow.ui"

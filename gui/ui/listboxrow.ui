@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="tasklist">
+    <child>
+        <object id="tasklistBoxRow" class="GtkListBoxRow">
+            <child>
+                <object id="contentBox" class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <child>
+                        <object id="leftSideContent" class="GtkBox">
+                            <child>
+                                <object id="taskName" class="GtkLabel">
+                                </object>
+                            </child>
+                            <child>
+                                <object id="sep0" class="GtkSeparator">
+                                </object>
+                            </child>
+                            <child>
+                                <object id="taskDescription" class="GtkTextView">
+                                </object>
+                            </child>
+                        </object>
+                    </child>
+                        <object id="rightSideContent" class="GtkBox">
+                            <child>
+                                <object id="propertiesButton" class="GtkButton">
+                                </object>
+                            </child>
+                        </object>
+                    <child>
+                    </child>
+                </object>
+            </child>
+        </object>
+    </child>
+</interface>
