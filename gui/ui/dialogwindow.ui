@@ -1,7 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="tasklist">
-    <child>
-        <object id="window" class="GtkDialog">
-        </object>
-    </child>
+    <object id="contentArea" class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <child>
+            <object id="grid" class="GtkGrid">
+                <property name="orientation">vertical</property>
+                <child>
+                    <object id="taskNameLabel" class="GtkLabel">
+                        <property name="label">Task name: </property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">0</property>
+                        </layout>
+                    </object>  
+                </child>
+                <child>
+                    <object id="taskDeadlineLabel" class="GtkLabel">
+                        <property name="label">Deadline: </property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">1</property>
+                        </layout>
+                    </object>
+                </child>
+                <property name="orientation">vertical</property>
+                <child>
+                    <object id="taskNameInput" class = "GtkEntry">
+                        <layout>
+                            <property name="column">1</property>
+                            <property name="row">0</property>
+                        </layout>
+                    </object>
+                </child>
+                <child>
+                    <object id="taskDeadlineInput" class = "GtkEntry">
+                        <layout>
+                            <property name="column">1</property>
+                            <property name="row">1</property>
+                        </layout>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
 </interface>
