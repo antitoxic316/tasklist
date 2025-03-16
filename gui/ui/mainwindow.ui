@@ -30,6 +30,7 @@
         </child>
         <child>
           <object id="taskBoxList" class="GtkListBox">
+            <property name="name">taskBoxList</property>
             <property name="show-separators">1</property>
           </object>
         </child>

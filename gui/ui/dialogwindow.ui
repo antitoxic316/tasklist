@@ -26,6 +26,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                     <object id="taskNameInput" class = "GtkEntry">
+                        <property name="name">taskNameInput</property>
                         <layout>
                             <property name="column">1</property>
                             <property name="row">0</property>
@@ -34,6 +35,7 @@
                 </child>
                 <child>
                     <object id="taskDeadlineInput" class = "GtkEntry">
+                        <property name="name">taskDeadlineInput</property>
                         <layout>
                             <property name="column">1</property>
                             <property name="row">1</property>
