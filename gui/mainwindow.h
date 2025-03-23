@@ -6,6 +6,7 @@ void activate_mainwindow(GtkApplication *app, gpointer user_data);
 void add_task_handler();
 void remove_task_handler();
 
+void taskboxlist_show_saved_tasks(GtkWidget *taskboxlist);
 void taskboxlist_show_task(GtkWidget *taskboxlist, Task *task);
 
 void add_task_dialog_init(GtkWindow *parent);

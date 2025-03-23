@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "tasklist_serializer.h"
+#include "tasklist.h"
 
 #include "path_config.h"
 
@@ -33,6 +33,18 @@ void activate_mainwindow(GtkApplication *app, gpointer user_data){
 
   gtk_widget_set_visible (GTK_WIDGET (window), TRUE);
   g_object_unref (builder);
+
+  taskboxlist_show_saved_tasks(GTK_WIDGET(taskBoxList));
+}
+
+void taskboxlist_show_saved_tasks(GtkWidget *taskboxlist){
+  tasklist_get_tasks_from_file(); //this sets tasklist_tasks and tasklist_tasks_count global variables
+  printf("%d \n", tasklist_tasks[0]->deadline);
+  printf("%d \n", sizeof(tasklist_tasks[0]->name));
+  for(int i = 0; i < tasklist_tasks_count; i++){
+    printf("task showed %d\n", i);
+    taskboxlist_show_task(taskboxlist, tasklist_tasks[i]);
+  }
 }
 
 void dialog_response_handler(GtkDialog *dialog, gint response_id){
@@ -64,7 +76,10 @@ void dialog_accept_handler(GtkDialog *dialog){
     time_t task_deadline = 0;
 
     task_name = gtk_entry_buffer_get_text(task_name_entry_buffer);
-    task = task_init(task_name, task_deadline);
+    task = task_init();
+    task_set_name(task, task_name);
+    task_set_deadline(task, 5);
+    tasklist_serializer_file_append(task);
     taskboxlist_show_task(GTK_WIDGET(taskboxlist), task);
 
     free(task);

@@ -3,7 +3,7 @@
     <object id="tasklistBoxRow" class="GtkListBoxRow">
         <child>
             <object id="contentBox" class="GtkBox">
-                <property name="orientation">horizontal</property>
+                <property name="orientation">vertical</property>
                 <child>
                     <object id="leftSideContent" class="GtkBox">
                         <child>
