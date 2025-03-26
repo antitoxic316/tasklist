@@ -9,6 +9,6 @@ extern size_t tasklist_tasks_count;
 
 void tasklist_get_tasks_from_file();
 void tasklist_add_task(Task *task);
-void tasklist_delete_task(char *task_id);
+void tasklist_remove_task(char *task_id);
 
 #endif

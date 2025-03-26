@@ -1,4 +1,4 @@
-add_library(gui mainwindow.c)
+add_library(gui utils.c tasksboxlist.c mainwindow.c)
 
 include_directories(${CMAKE_SOURCE_DIR}/core)
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="tasklist">
     <object id="tasklistBoxRow" class="GtkListBoxRow">
+        <property name="hexpand">1</property>
         <child>
             <object id="contentBox" class="GtkBox">
-                <property name="orientation">vertical</property>
+                <property name="orientation">horizontal</property>
                 <child>
                     <object id="leftSideContent" class="GtkBox">
                         <child>
@@ -18,6 +19,11 @@
                             <object id="taskDescription" class="GtkTextView">
                             </object>
                         </child>
+                    </object>
+                </child>
+                <child>
+                    <object id="expander" class="GtkBox">
+                        <property name="hexpand">1</property>
                     </object>
                 </child>
                 <child>

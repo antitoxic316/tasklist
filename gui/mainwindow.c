@@ -1,13 +1,17 @@
 #include "mainwindow.h"
 #include "tasklist.h"
 
+#include "utils.h"
+
+#include "tasksboxlist.h"
+
 #include "path_config.h"
 
 void activate_mainwindow(GtkApplication *app, gpointer user_data){
   GObject *window;
   GObject *newTaskButton;
   GObject *removeTaskButton;
-  GObject *taskBoxList;
+  GObject *tasksBoxList;
   
   GtkBuilder *builder = gtk_builder_new();
   gboolean ui_load_res = gtk_builder_add_from_file(builder, MAINWINDOW_UI_FILE_PATH, NULL);
@@ -26,25 +30,15 @@ void activate_mainwindow(GtkApplication *app, gpointer user_data){
   newTaskButton = gtk_builder_get_object(builder, "newTaskButton");
   removeTaskButton = gtk_builder_get_object(builder, "removeTaskButton");
 
-  taskBoxList = gtk_builder_get_object(builder, "taskBoxList");
+  tasksBoxList = gtk_builder_get_object(builder, "tasksBoxList");
 
   g_signal_connect_swapped(newTaskButton, "clicked", G_CALLBACK(add_task_dialog_init), window);
-  g_signal_connect(removeTaskButton, "clicked", G_CALLBACK(remove_task_handler), NULL);
+  g_signal_connect_swapped(removeTaskButton, "clicked", G_CALLBACK(remove_task_handler), tasksBoxList);
 
   gtk_widget_set_visible (GTK_WIDGET (window), TRUE);
   g_object_unref (builder);
 
-  taskboxlist_show_saved_tasks(GTK_WIDGET(taskBoxList));
-}
-
-void taskboxlist_show_saved_tasks(GtkWidget *taskboxlist){
-  tasklist_get_tasks_from_file(); //this sets tasklist_tasks and tasklist_tasks_count global variables
-  printf("%d \n", tasklist_tasks[0]->deadline);
-  printf("%d \n", sizeof(tasklist_tasks[0]->name));
-  for(int i = 0; i < tasklist_tasks_count; i++){
-    printf("task showed %d\n", i);
-    taskboxlist_show_task(taskboxlist, tasklist_tasks[i]);
-  }
+  tasksboxlist_show_saved_tasks(GTK_WIDGET(tasksBoxList));
 }
 
 void dialog_response_handler(GtkDialog *dialog, gint response_id){
@@ -61,53 +55,51 @@ void dialog_reject_handler(GtkDialog *dialog){
 
 void dialog_accept_handler(GtkDialog *dialog){
     GtkWindow *mainwindow;
-    GtkWidget *taskboxlist, *task_name_entry, *task_deadline_entry;
+    GtkWidget *tasksboxlist, *task_name_entry, *task_deadline_entry;
+    GtkCalendar *calendar_entry;
+    GtkWidget *task_description_entry;
+    GtkWidget *task_time_entry;
     GtkEntryBuffer *task_name_entry_buffer;
+    GtkEntryBuffer *task_description_entry_buffer;
 
     mainwindow = gtk_window_get_transient_for(GTK_WINDOW(dialog));
 
-    taskboxlist = gtk_widget_get_child_by_name(gtk_window_get_child(mainwindow), "taskBoxList");
+    tasksboxlist = gtk_widget_get_child_by_name(gtk_window_get_child(mainwindow), "tasksBoxList");
     task_name_entry = gtk_widget_get_child_by_name(GTK_WIDGET(dialog), "taskNameInput");
-    task_deadline_entry = gtk_widget_get_child_by_name(GTK_WIDGET(dialog), "taskDeadlineInput");
     task_name_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(task_name_entry));
+    task_description_entry = gtk_widget_get_child_by_name(GTK_WIDGET(dialog), "taskDescriptionInput");
+    task_description_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(task_description_entry));
+
 
     Task *task;
     char *task_name;
+    char *task_description;
     time_t task_deadline = 0;
 
     task_name = gtk_entry_buffer_get_text(task_name_entry_buffer);
+    task_description = gtk_entry_buffer_get_text(task_description_entry_buffer);
     task = task_init();
     task_set_name(task, task_name);
+    task_set_description(task, task_description);
     task_set_deadline(task, 5);
-    tasklist_serializer_file_append(task);
-    taskboxlist_show_task(GTK_WIDGET(taskboxlist), task);
 
-    free(task);
-    return;
+    tasklist_add_task(task);
+    tasksboxlist_show_task(GTK_WIDGET(tasksboxlist), task);
 }
 
-void taskboxlist_show_task(GtkWidget *taskboxlist, Task *task){
-  GtkBuilder *builder;
-  GtkListBoxRow *row;
-  GtkLabel *task_name_label;
+void remove_task_handler(GtkWidget *tasksboxlist){
+  GtkListBoxRow *selected_row;
+  char *id;
 
-  builder = gtk_builder_new();
-  gboolean ui_load_res = gtk_builder_add_from_file(builder, LIST_BOX_ROW_UI_FILE_PATH, NULL);
-  if(!ui_load_res){
-    g_printerr("Error loading UI file\n");
+  selected_row = gtk_list_box_get_selected_row(GTK_LIST_BOX(tasksboxlist)); 
+  if(!selected_row){
     return;
   }
 
-  row = GTK_LIST_BOX_ROW(gtk_builder_get_object(builder, "tasklistBoxRow"));
-  task_name_label = GTK_LABEL(gtk_builder_get_object(builder, "taskName"));
-  
-  gtk_label_set_label(task_name_label, task->name);
+  id = g_object_get_data(G_OBJECT(selected_row), "task_id");
+  gtk_list_box_remove(GTK_LIST_BOX(tasksboxlist), GTK_WIDGET(selected_row));
 
-  gtk_list_box_append(GTK_LIST_BOX(taskboxlist), GTK_WIDGET(row));
-}
-
-void remove_task_handler(){
-
+  tasklist_remove_task(id);
 }
 
 void add_task_dialog_init(GtkWindow *parent){
@@ -144,42 +136,4 @@ void add_task_dialog_init(GtkWindow *parent){
   gtk_widget_show(dialog);
 
   g_object_unref(builder);
-}
-
-GtkWidget *gtk_widget_get_child_by_name(GtkWidget* widget, char* name){
-  GList *parent_widgets = NULL;
-  parent_widgets = g_list_append(parent_widgets, widget);
-
-  while(g_list_length(parent_widgets)){
-    GList *child_widgets = NULL;
-    for(GList *current_g_list_elem = parent_widgets; 
-        current_g_list_elem != NULL;
-        current_g_list_elem = current_g_list_elem->next){
-      GtkWidget *current_widget = current_g_list_elem->data;
-
-      if(!g_strcmp0(gtk_widget_get_name(current_widget), name)){
-        g_list_free(parent_widgets);
-        g_list_free(child_widgets);
-        return current_widget;
-      }
-
-      GtkWidget *first_child = gtk_widget_get_first_child(current_widget);
-      if(!first_child){
-        continue;
-      }
-      child_widgets = g_list_append(child_widgets, first_child);
-      GtkWidget *next_sibling = first_child;
-      while(GTK_IS_WIDGET(next_sibling)){
-        child_widgets = g_list_append(child_widgets, next_sibling);
-        next_sibling = gtk_widget_get_next_sibling(next_sibling);
-      }
-    }
-
-    g_list_free(parent_widgets);
-    parent_widgets = g_list_copy(child_widgets);
-    g_list_free(child_widgets);
-  }
-
-  g_list_free(parent_widgets);
-  return NULL;
 }
