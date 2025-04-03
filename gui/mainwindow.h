@@ -2,7 +2,7 @@
 
 #include "task.h"
 
-void activate_mainwindow(GtkApplication *app, gpointer user_data);
+void application_init(GtkApplication *app, gpointer user_data);
 void add_task_handler();
 void remove_task_handler();
 

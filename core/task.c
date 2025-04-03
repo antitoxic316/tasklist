@@ -9,6 +9,7 @@ Task *task_init(){
 
     new_task->id = NULL;
     new_task->name = NULL;
+    new_task->description = NULL;
 
     new_task->creation_time = time(NULL);
     uint seed = time(0);

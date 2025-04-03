@@ -6,13 +6,14 @@
 
 #include "core_path_config.h"
 
-void tasklist_serializer_file_append(Task *task){
-    FILE *file = fopen(APPDATA_FILE, "ab");
+#define FILE_OPENED_ASSERT \
+    if(file == NULL){ printf("error opening file data.bin\n"); return; }
 
-    if(file == NULL){
-        printf("error opening file\n");
-        return;
-    }
+void tasklist_serializer_file_append(Task *task){
+    if(!task) return;
+
+    FILE *file = fopen(APPDATA_FILE, "ab");
+    FILE_OPENED_ASSERT
     size_t res;
 
     size_t task_name_len = strlen(task->name);
@@ -108,5 +109,17 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
 }
 
 void tasklist_serializer_rewrite_state(Task** tasks, size_t tasks_size){
+    FILE *file;
 
+    // clear the file and write the state from the start
+    file = fopen(APPDATA_FILE, "wb");
+    FILE_OPENED_ASSERT
+    file = freopen(APPDATA_FILE, "ab", file);
+    FILE_OPENED_ASSERT
+
+    size_t res;
+
+    //for()
+
+    fclose(file);
 }

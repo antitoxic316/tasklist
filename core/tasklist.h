@@ -4,11 +4,19 @@
 #include "task.h"
 #include "tasklist_serializer.h"
 
-extern Task** tasklist_tasks;
-extern size_t tasklist_tasks_count;
+typedef struct _TaskList TaskList;
 
-void tasklist_get_tasks_from_file();
-void tasklist_add_task(Task *task);
-void tasklist_remove_task(char *task_id);
+struct _TaskList {
+    Task *task;
+    TaskList *next;
+    TaskList *prev;
+};
+
+TaskList *tasklist_init_from_array(Task **tasks, size_t tasks_count);
+TaskList *tasklist_get_tasks_from_file();
+TaskList *tasklist_alloc();
+TaskList *tasklist_append(TaskList *tasklist, Task* task);;
+TaskList *tasklist_remove_node(TaskList *tasklist, TaskList *node);
+TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id);
 
 #endif

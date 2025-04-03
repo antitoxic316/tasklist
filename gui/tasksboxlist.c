@@ -1,15 +1,20 @@
 #include "tasksboxlist.h"
 #include "utils.h"
 
-#include "tasklist.h"
-
 #include "path_config.h"
 
-void tasksboxlist_show_saved_tasks(GtkWidget *taskboxlist){
-  tasklist_get_tasks_from_file(); //this sets tasklist_tasks and tasklist_tasks_count global variables
-  for(int i = 0; i < tasklist_tasks_count; i++){
-    printf("task showed %d\n", i);
-    tasksboxlist_show_task(taskboxlist, tasklist_tasks[i]);
+void tasksboxlist_link_tasks(GtkWidget *tasksboxlist, TaskList *tasks){
+  g_object_set_data(G_OBJECT(tasksboxlist), "tasks", tasks);
+}
+
+void tasksboxlist_show_saved_tasks(GtkWidget *tasksboxlist){
+  TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
+  if(!tasks){
+    return;
+  }
+  for(; tasks != NULL; tasks = tasks->next){
+    printf("task showed\n");
+    tasksboxlist_show_task(tasksboxlist, tasks->task);
   }
 }
 

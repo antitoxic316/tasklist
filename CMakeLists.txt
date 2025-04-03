@@ -16,7 +16,6 @@ target_include_directories(tasklist PUBLIC
 target_link_libraries(gui PUBLIC core)
 
 
-
 if(DEBUG)
     message(STATUS "Debug build mode")
     set(CMAKE_BUILD_TYPE Debug)
