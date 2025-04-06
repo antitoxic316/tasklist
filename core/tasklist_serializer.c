@@ -49,6 +49,7 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
         char *task_description;
         char *task_id = malloc(1*TASK_ID_LEN);
         
+        
         fread(task_id, sizeof(char), TASK_ID_LEN, file);
         if(feof(file)){
             task_free(current_task);
@@ -97,6 +98,7 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
 
         current_task->id = task_id;
         current_task->name = task_name;
+        current_task->description = task_description;
 
         count++;
         task_array = realloc(task_array, count*sizeof(Task*));

@@ -12,6 +12,7 @@ struct _TaskList {
     TaskList *prev;
 };
 
+int tasklist_len(TaskList *tasklist);
 TaskList *tasklist_init_from_array(Task **tasks, size_t tasks_count);
 TaskList *tasklist_get_tasks_from_file();
 TaskList *tasklist_alloc();

@@ -3,10 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stdio.h>
+
+int tasklist_len(TaskList *tasklist){
+    int l = 0;
+    while(tasklist){
+        l++;
+        tasklist = tasklist->next;
+    }
+
+    return l;
+}
+
 TaskList *tasklist_get_tasks_from_file(){
     Task **tasks = NULL;
     size_t tasks_count = 0;
     tasklist_serializer_parse_state(&tasks, &tasks_count);
+    if(tasks_count){
+        printf("%d\n %s\n %s\n", tasks_count, tasks[0]->name, tasks[0]->description);
+    }
     return tasklist_init_from_array(tasks, tasks_count);
 }
 
@@ -22,25 +37,36 @@ TaskList *tasklist_init_from_array(Task **tasks, size_t tasks_count){
         return NULL;
     }
 
-    TaskList *tasklist = tasklist_alloc();
-    tasklist->task = tasks[0];
-    TaskList *prev_node = tasklist;
-    TaskList *next_node;
+    TaskList *root_node = NULL;
 
-    tasklist->next = next_node;
-    for(int i = 1; i < tasks_count; i++){
-        next_node = tasklist_alloc();
-        next_node->prev = prev_node;
-        next_node->task = tasks[i];
-        prev_node = next_node;
-        next_node = next_node->next;
+    TaskList *tasklist = NULL;
+    TaskList *prev_node = NULL;
+
+    for(int i = 0; i < tasks_count; i++){
+        tasklist = tasklist_alloc();
+        tasklist->task = tasks[i];
+        tasklist->prev = prev_node;
+        tasklist->next = NULL;
+
+        if(prev_node){
+            prev_node->next = tasklist;
+        } else {
+            root_node = tasklist;
+        }
+
+        prev_node = tasklist;
     }
+    
+    printf("%d", tasks_count);
+    printf("tasklist len %d\n", tasklist_len(root_node));
 
-    return tasklist;
+    return root_node;
 }
 
 
 TaskList *tasklist_append(TaskList *tasklist, Task* task){
+    tasklist_serializer_file_append(task);
+
     TaskList *next_node = tasklist_alloc();
 
     if(!tasklist){

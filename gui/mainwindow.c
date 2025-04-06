@@ -78,8 +78,8 @@ void dialog_accept_handler(GtkDialog *dialog){
 
     Task *task;
     char *task_name;
-    char *task_description = "";
-    time_t task_deadline = 0;
+    char *task_description;
+    time_t task_deadline = 50;
 
     task_name = gtk_entry_buffer_get_text(task_name_entry_buffer);
     task_description = gtk_entry_buffer_get_text(task_description_entry_buffer);
