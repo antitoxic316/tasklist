@@ -42,13 +42,13 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
     size_t count = 0;
 
     while(1){
-        Task *current_task = malloc(1 * sizeof(Task));
+        Task *current_task = task_init();
         size_t task_name_len;
         char *task_name;
         size_t task_description_len;
         char *task_description;
         char *task_id = malloc(1*TASK_ID_LEN);
-        
+
         
         fread(task_id, sizeof(char), TASK_ID_LEN, file);
         if(feof(file)){
@@ -97,8 +97,8 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
         }
 
         current_task->id = task_id;
-        current_task->name = task_name;
-        current_task->description = task_description;
+        task_set_name(current_task, task_name);
+        task_set_description(current_task, task_description);
 
         count++;
         task_array = realloc(task_array, count*sizeof(Task*));
@@ -110,18 +110,15 @@ void tasklist_serializer_parse_state(Task*** tasks, size_t *tasks_count){
     *tasks_count = count;
 }
 
-void tasklist_serializer_rewrite_state(Task** tasks, size_t tasks_size){
+void tasklist_serializer_rewrite_state(Task** tasks, size_t tasks_count){
     FILE *file;
 
     // clear the file and write the state from the start
     file = fopen(APPDATA_FILE, "wb");
     FILE_OPENED_ASSERT
-    file = freopen(APPDATA_FILE, "ab", file);
-    FILE_OPENED_ASSERT
-
-    size_t res;
-
-    //for()
-
     fclose(file);
+
+    for(int i = 0; i < tasks_count; i++){
+        tasklist_serializer_file_append(tasks[i]);
+    }
 }

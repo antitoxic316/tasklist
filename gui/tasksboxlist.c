@@ -3,17 +3,12 @@
 
 #include "path_config.h"
 
-void tasksboxlist_link_tasks(GtkWidget *tasksboxlist, TaskList *tasks){
-  g_object_set_data(G_OBJECT(tasksboxlist), "tasks", tasks);
-}
-
 void tasksboxlist_show_saved_tasks(GtkWidget *tasksboxlist){
   TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
   if(!tasks){
     return;
   }
   for(; tasks != NULL; tasks = tasks->next){
-    printf("task showed\n");
     tasksboxlist_show_task(tasksboxlist, tasks->task);
   }
 }
@@ -34,8 +29,12 @@ void tasksboxlist_show_task(GtkWidget *taskboxlist, Task *task){
   task_name_label = GTK_LABEL(gtk_builder_get_object(builder, "taskName"));
   
   g_object_set_data(G_OBJECT(row), "task_id", task->id);
-
   gtk_label_set_label(task_name_label, task->name);
-
+  
   gtk_list_box_append(GTK_LIST_BOX(taskboxlist), GTK_WIDGET(row));
+}
+
+void tasksboxlist_refresh(GtkWidget *tasksboxlist){
+  gtk_list_box_remove_all(GTK_LIST_BOX(tasksboxlist));
+  tasksboxlist_show_saved_tasks(tasksboxlist);
 }

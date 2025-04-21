@@ -25,6 +25,4 @@ char *task_get_description(Task *task); //
 time_t task_get_deadline(Task *task); 
 time_t task_get_creation_time(Task *task); //
 
-
-
 #endif

@@ -19,5 +19,6 @@ TaskList *tasklist_alloc();
 TaskList *tasklist_append(TaskList *tasklist, Task* task);;
 TaskList *tasklist_remove_node(TaskList *tasklist, TaskList *node);
 TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id);
+void tasklist_to_array(TaskList *tasklist, Task ***tasks_p, size_t *tasks_count_p);
 
 #endif

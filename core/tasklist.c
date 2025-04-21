@@ -19,9 +19,6 @@ TaskList *tasklist_get_tasks_from_file(){
     Task **tasks = NULL;
     size_t tasks_count = 0;
     tasklist_serializer_parse_state(&tasks, &tasks_count);
-    if(tasks_count){
-        printf("%d\n %s\n %s\n", tasks_count, tasks[0]->name, tasks[0]->description);
-    }
     return tasklist_init_from_array(tasks, tasks_count);
 }
 
@@ -29,6 +26,7 @@ TaskList *tasklist_alloc(){
     TaskList *node = malloc(sizeof(TaskList));
     node->next = NULL;
     node->prev = NULL;
+    node->task = NULL;
     return node;
 }
 
@@ -56,9 +54,6 @@ TaskList *tasklist_init_from_array(Task **tasks, size_t tasks_count){
 
         prev_node = tasklist;
     }
-    
-    printf("%d", tasks_count);
-    printf("tasklist len %d\n", tasklist_len(root_node));
 
     return root_node;
 }
@@ -68,54 +63,42 @@ TaskList *tasklist_append(TaskList *tasklist, Task* task){
     tasklist_serializer_file_append(task);
 
     TaskList *next_node = tasklist_alloc();
+    next_node->task = task;
 
     if(!tasklist){
-        next_node->task = task;
         return next_node;
     }
 
-    TaskList *last_node = tasklist;
-    while(last_node->next){ // THE BUG IS HERE !!!!!!!!!!!!!!!!!!!!!
-        last_node = tasklist->next;
+    TaskList *tail = tasklist;
+    while(tail->next){
+        tail = tail->next;
     }
 
-    last_node->next = next_node;
-
-    next_node->prev = last_node;
-    next_node->task = task;
-    next_node->next = NULL;
+    tail->next = next_node;
+    next_node->prev = tail;
 
     return tasklist;
 }
 
 TaskList *tasklist_remove_node(TaskList *tasklist, TaskList *node){
-    //IMPLEMENT CHECKS FOR IF node IS IN tasklist ???
+    if(!node) return tasklist;
 
-    if(!node){
-        return tasklist;
+    TaskList *new_root = tasklist;
+
+    if(tasklist == node){
+        new_root = node->next;
+    }
+    
+    if(node->prev){
+        node->prev->next = node->next;
+    }
+    if(node->next){
+        node->next->prev = node->prev;
     }
 
-    TaskList *node_prev = node->prev;
-    TaskList *node_next = node->next;
-
-    if(!node_prev && !node_next){
-        free(node);
-        return NULL;
-    }
-
-    if(!node_prev){
-        free(node);   
-        return node_next;
-    }
-
-    if(!node_next){
-        free(node);
-        return node_prev;
-    }
-
+    task_free(node->task);
     free(node);
-    node_prev->next = node_next;
-    return tasklist;
+    return new_root;
 }
 
 TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id){
@@ -124,12 +107,35 @@ TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id){
     for(TaskList *node = tasklist; node != NULL; node = node->next){
         Task *current_task = node->task;
         if(!strcmp(current_task->id, task_id)){
-            task_free(current_task);
             new_tasklist = tasklist_remove_node(tasklist, node);
+
+            Task **tasks_array_p = NULL;
+            size_t tasks_count_p = 0;
+            tasklist_to_array(new_tasklist, &tasks_array_p, &tasks_count_p);
+            tasklist_serializer_rewrite_state(tasks_array_p, tasks_count_p);
 
             return new_tasklist;
         }
     }
 
     return tasklist;
+}
+
+void tasklist_to_array(TaskList *tasklist, Task ***tasks_p, size_t *tasks_count_p){
+    Task **tasks = NULL;
+    size_t tasks_count = 0;
+    
+    for(TaskList *node = tasklist; node != NULL; node = node->next){
+        size_t new_arr_size = (tasks_count+1)*sizeof(Task*);
+        tasks = realloc(tasks, new_arr_size);
+        if(!tasks){
+            printf("Error allocating memory for saving tasks");
+            break;
+        }
+        tasks[tasks_count] = node->task;
+        tasks_count++;
+    }
+
+    *tasks_p = tasks;
+    *tasks_count_p = tasks_count;
 }

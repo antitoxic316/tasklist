@@ -16,12 +16,9 @@ Task *task_init(){
 
     char *task_id = malloc(1*TASK_ID_LEN);
     int rd_num = rand_r(&seed) % (int)(pow(10, TASK_ID_LEN+1) - pow(10, TASK_ID_LEN) + 1) + 10*TASK_ID_LEN;
-    printf("%d\n", rd_num);
     int count = TASK_ID_LEN-1;
-    while(--count){
+    while(count--){
         task_id[count] = rd_num%10 + '0';
-        printf("%d\n", count);
-        printf("%c\n", task_id[count]);
         rd_num /= 10;
     }
 
@@ -29,14 +26,10 @@ Task *task_init(){
 
     new_task->id = task_id;
 
-    printf("f");
-
     return new_task;
 }
 
 void task_free(Task *task){
-    return;
-    printf("freeing task");
     if(!task){
         return;
     }
@@ -49,7 +42,6 @@ void task_free(Task *task){
     }
 
     free(task);
-    task = NULL;
 }
 
 void task_set_name(Task *task, char *task_name){

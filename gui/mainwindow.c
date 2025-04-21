@@ -33,7 +33,7 @@ void application_init(GtkApplication *app, gpointer user_data){
   TaskList *app_tasks;
   app_tasks = tasklist_get_tasks_from_file();
   tasksBoxList = gtk_builder_get_object(builder, "tasksBoxList");
-  tasksboxlist_link_tasks(GTK_WIDGET(tasksBoxList), app_tasks);
+  g_object_set_data(G_OBJECT(tasksBoxList), "tasks", app_tasks);
 
   g_signal_connect_swapped(newTaskButton, "clicked", G_CALLBACK(add_task_dialog_init), window);
   g_signal_connect_swapped(removeTaskButton, "clicked", G_CALLBACK(remove_task_handler), tasksBoxList);
@@ -81,8 +81,8 @@ void dialog_accept_handler(GtkDialog *dialog){
     char *task_description;
     time_t task_deadline = 50;
 
-    task_name = gtk_entry_buffer_get_text(task_name_entry_buffer);
-    task_description = gtk_entry_buffer_get_text(task_description_entry_buffer);
+    task_name = g_strdup(gtk_entry_buffer_get_text(task_name_entry_buffer));
+    task_description = g_strdup(gtk_entry_buffer_get_text(task_description_entry_buffer));
     
     task = task_init();
     task_set_name(task, task_name);
@@ -91,7 +91,7 @@ void dialog_accept_handler(GtkDialog *dialog){
 
     app_tasks = tasklist_append(app_tasks, task);
     g_object_set_data(G_OBJECT(tasksboxlist), "tasks", app_tasks);
-    tasksboxlist_show_task(GTK_WIDGET(tasksboxlist), task);
+    tasksboxlist_refresh(GTK_WIDGET(tasksboxlist));
 }
 
 void remove_task_handler(GtkWidget *tasksboxlist){
@@ -105,9 +105,10 @@ void remove_task_handler(GtkWidget *tasksboxlist){
   }
 
   id = g_object_get_data(G_OBJECT(selected_row), "task_id");
-  gtk_list_box_remove(GTK_LIST_BOX(tasksboxlist), GTK_WIDGET(selected_row));
 
-  tasklist_remove_by_id(tasks, id);
+  tasks = tasklist_remove_by_id(tasks, id);
+  g_object_set_data(G_OBJECT(tasksboxlist), "tasks", tasks);
+  tasksboxlist_refresh(GTK_WIDGET(tasksboxlist));
 }
 
 void add_task_dialog_init(GtkWindow *parent){
