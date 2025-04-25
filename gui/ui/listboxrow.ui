@@ -7,6 +7,8 @@
                 <property name="orientation">horizontal</property>
                 <child>
                     <object id="leftSideContent" class="GtkBox">
+                        <property name="hexpand">1</property>
+                        <property name="orientation">vertical</property>
                         <child>
                             <object id="taskName" class="GtkLabel">
                             </object>
@@ -17,6 +19,11 @@
                         </child>
                         <child>
                             <object id="taskDescription" class="GtkTextView">
+                                    <property name="visible">True</property>
+                                    <property name="editable">False</property>
+                                    <property name="wrap-mode">word</property>
+                                    <property name="height-request">50</property>
+                                    <property name="vexpand">1</property>
                             </object>
                         </child>
                     </object>
@@ -28,8 +35,10 @@
                 </child>
                 <child>
                     <object id="rightSideContent" class="GtkBox">
+                        <property name="orientation">horizontal</property>
                         <child>
                             <object id="propertiesButton" class="GtkButton">
+                                <property name="vexpand">1</property>
                             </object>
                         </child>
                     </object>
