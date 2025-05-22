@@ -29,10 +29,14 @@
           </object>
         </child>
         <child>
-          <object id="tasksBoxList" class="GtkListBox">
-            <property name="hexpand">1</property>
-            <property name="name">tasksBoxList</property>
-            <property name="show-separators">1</property>
+          <object id="listWrapper" class="GtkScrolledWindow">
+            <child>
+              <object id="tasksBoxList" class="GtkListBox">
+                <property name="hexpand">1</property>
+                <property name="name">tasksBoxList</property>
+                <property name="show-separators">1</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>          

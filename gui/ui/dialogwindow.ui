@@ -15,20 +15,11 @@
                     </object>  
                 </child>
                 <child>
-                    <object id="taskDeadlineLabel" class="GtkLabel">
-                        <property name="label">At day: </property>
-                        <layout>
-                            <property name="column">0</property>
-                            <property name="row">1</property>
-                        </layout>
-                    </object>
-                </child>
-                <child>
                     <object id="taskDescriptionLabel" class="GtkLabel">
                         <property name="label">Description: </property>
                         <layout>
                             <property name="column">0</property>
-                            <property name="row">2</property>
+                            <property name="row">1</property>
                         </layout>
                     </object>
                 </child>
@@ -37,7 +28,7 @@
                         <property name="label">Due to: </property>
                         <layout>
                             <property name="column">0</property>
-                            <property name="row">3</property>
+                            <property name="row">2</property>
                         </layout>
                     </object>
                 </child>
@@ -51,12 +42,8 @@
                     </object>
                 </child>
                 <child>
-                    <object id="taskDayInputExpander" class = "GtkExpander">
-                        <child>
-                            <object id="taskDayInput" class = "GtkCalendar">
-                                <property name="name">taskDayInput</property>
-                            </object>
-                        </child>
+                    <object id="taskDestriptionInput" class = "GtkEntry">
+                        <property name="name">taskDescriptionInput</property>
                         <layout>
                             <property name="column">1</property>
                             <property name="row">1</property>
@@ -64,21 +51,28 @@
                     </object>
                 </child>
                 <child>
-                    <object id="taskDestriptionInput" class = "GtkEntry">
-                        <property name="name">taskDescriptionInput</property>
+                    <object id="timeInputContainer" class = "GtkBox">
                         <layout>
                             <property name="column">1</property>
                             <property name="row">2</property>
                         </layout>
-                    </object>
-                </child>
-                <child>
-                    <object id="taskTimeInput" class = "GtkEntry">
-                        <property name="name">taskTimeInput</property>
-                        <layout>
-                            <property name="column">1</property>
-                            <property name="row">3</property>
-                        </layout>
+                        <child>
+                            <object id="timeInput" class="GtkSpinButton">
+                                <property name="name">timeInput</property>
+                                <signal name="input" handler="time_spinbutton_input"></signal>
+                                <signal name="output" handler="time_spinbutton_output"></signal>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="calendarExpander" class = "GtkExpander">
+                                <property name="name">calendarExpander</property>
+                                <child>
+                                    <object id="taskDayInput" class = "GtkCalendar">
+                                        <property name="name">taskDayInput</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
