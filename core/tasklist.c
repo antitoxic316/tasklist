@@ -80,7 +80,7 @@ TaskList *tasklist_append(TaskList *tasklist, Task* task){
     return tasklist;
 }
 
-TaskList *tasklist_remove_node(TaskList *tasklist, TaskList *node){
+TaskList *tasklist_free_node(TaskList *tasklist, TaskList *node){
     if(!node) return tasklist;
 
     TaskList *new_root = tasklist;
@@ -96,9 +96,20 @@ TaskList *tasklist_remove_node(TaskList *tasklist, TaskList *node){
         node->next->prev = node->prev;
     }
 
-    task_free(node->task);
     free(node);
     return new_root;
+}
+
+TaskList *tasklist_free_node_full(TaskList *tasklist, TaskList *node){
+    if(tasklist == NULL){
+        return NULL;
+    }
+    if(node == NULL){
+        return tasklist;
+    }
+
+    task_free(node->task);
+    return tasklist_free_node(tasklist, node);
 }
 
 TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id){
@@ -107,7 +118,7 @@ TaskList *tasklist_remove_by_id(TaskList *tasklist, char *task_id){
     for(TaskList *node = tasklist; node != NULL; node = node->next){
         Task *current_task = node->task;
         if(!strcmp(current_task->id, task_id)){
-            new_tasklist = tasklist_remove_node(tasklist, node);
+            new_tasklist = tasklist_free_node_full(tasklist, node);
 
             Task **tasks_array_p = NULL;
             size_t tasks_count_p = 0;
@@ -138,4 +149,10 @@ void tasklist_to_array(TaskList *tasklist, Task ***tasks_p, size_t *tasks_count_
 
     *tasks_p = tasks;
     *tasks_count_p = tasks_count;
+}
+
+void tasklist_free_all(TaskList *tasklist){
+    while(tasklist){
+        tasklist = tasklist_free_node_full(tasklist, tasklist);
+    }
 }

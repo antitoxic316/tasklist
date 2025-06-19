@@ -42,12 +42,13 @@ void application_init(GtkApplication *app, gpointer user_data){
   gtk_widget_set_visible(GTK_WIDGET (window), TRUE);
   g_object_unref(builder);
 
-  tasksboxlist_show_saved_tasks(GTK_WIDGET(tasksBoxList));
+  tasksboxlist_show_saved_tasks(GTK_LIST_BOX(tasksBoxList));
 }
 
 void remove_task_handler(GtkWidget *tasksboxlist){
   TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
   GtkListBoxRow *selected_row;
+  Task *task;
   char *id;
 
   selected_row = gtk_list_box_get_selected_row(GTK_LIST_BOX(tasksboxlist)); 
@@ -55,9 +56,10 @@ void remove_task_handler(GtkWidget *tasksboxlist){
     return;
   }
 
-  id = g_object_get_data(G_OBJECT(selected_row), "task_id");
+  task = g_object_get_data(G_OBJECT(selected_row), "taskRef");
+  id = task_get_id(task);
 
   tasks = tasklist_remove_by_id(tasks, id);
   g_object_set_data(G_OBJECT(tasksboxlist), "tasks", tasks);
-  tasksboxlist_refresh(GTK_WIDGET(tasksboxlist));
+  tasksboxlist_refresh(GTK_LIST_BOX(tasksboxlist));
 }

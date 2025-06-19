@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-void tasksboxlist_show_saved_tasks(GtkWidget *tasksboxlist){
+void tasksboxlist_show_saved_tasks(GtkListBox *tasksboxlist){
   TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
   if(!tasks){
     return;
@@ -15,7 +15,7 @@ void tasksboxlist_show_saved_tasks(GtkWidget *tasksboxlist){
   }
 }
 
-void tasksboxlist_show_task(GtkWidget *taskboxlist, Task *task){
+void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task){
   GtkBuilder *builder;
   GtkListBoxRow *row;
   GObject *task_name_label;
@@ -46,17 +46,9 @@ void tasksboxlist_show_task(GtkWidget *taskboxlist, Task *task){
   );
 
   char time_buff[32];
-  time_t now = time(NULL);
-  int64_t t_diff = (int64_t)difftime(task_get_deadline(task), now);
-  int hours, minutes, seconds;
-  hours = t_diff / 3600;
-  t_diff %= 3600;
-  minutes = t_diff / 60;
-  t_diff %= 60;
-  seconds = t_diff;
-  int r = snprintf(time_buff, 32, "%d:%d:%d", hours, minutes, seconds);
+  getTimeRemainedStr(task_get_deadline(task), time_buff, 32);
 
-  g_object_set_data(G_OBJECT(row), "task_id", task->id);
+  g_object_set_data(G_OBJECT(row), "taskRef", task);
 
   gtk_label_set_label(GTK_LABEL(task_name_label), task_get_name(task));
   gtk_label_set_label(GTK_LABEL(task_deadline_label), time_buff);
@@ -64,9 +56,41 @@ void tasksboxlist_show_task(GtkWidget *taskboxlist, Task *task){
   gtk_list_box_append(GTK_LIST_BOX(taskboxlist), GTK_WIDGET(row));
   
   gtk_widget_set_size_request(GTK_WIDGET(task_description_textview), -1, 50);
+
+  g_object_unref(builder);
 }
 
-void tasksboxlist_refresh(GtkWidget *tasksboxlist){
+//this function makes me dissapointed
+void tasksboxlist_refresh(GtkListBox *tasksboxlist){
+  TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
+  
+  tasklist_free_all(tasks);
   gtk_list_box_remove_all(GTK_LIST_BOX(tasksboxlist));
+
+  tasks = tasklist_get_tasks_from_file();
+  g_object_set_data(G_OBJECT(tasksboxlist), "tasks", tasks);
+
   tasksboxlist_show_saved_tasks(tasksboxlist);
+}
+
+
+gboolean tasksboxlist_TimeUpdateCallback(void *selfRef){
+  GtkListBox *listBox = (GtkListBox *)selfRef;
+
+  if(!listBox) return FALSE;
+
+  GtkListBoxRow *row;
+  
+  for(int i = 0; 
+      (row = gtk_list_box_get_row_at_index(selfRef, i)) != NULL;
+      i++){
+    
+    GtkWidget *timeLabel = gtk_widget_get_child_by_name(GTK_WIDGET(row), "taskDeadline");
+    Task *task = g_object_get_data(G_OBJECT(row), "taskRef");
+    time_t task_deadline = task_get_deadline(task);
+    char buf[32];
+    getTimeRemainedStr(task_deadline, buf, 32);
+    gtk_label_set_label(GTK_LABEL(timeLabel), buf);
+  }
+
 }

@@ -38,6 +38,7 @@
                         <property name="orientation">horizontal</property>
                         <child>
                             <object id="taskDeadline" class="GtkLabel">
+                                <property name="name">taskDeadline</property>
                             </object>
                         </child>
                         <child>

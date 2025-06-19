@@ -40,6 +40,9 @@ void task_free(Task *task){
     if(task->id){
         free(task->id);
     }
+    if(task->description){
+        free(task->description);
+    }
 
     free(task);
 }

@@ -7,9 +7,10 @@
 
 #include "task.h"
 
-void tasksboxlist_show_task(GtkWidget *taskboxlist, Task *task);
-void tasksboxlist_remove_task(GtkWidget *tasksboxlist, char* id);
-void tasksboxlist_show_saved_tasks(GtkWidget *taskboxlist);
-void tasksboxlist_refresh(GtkWidget *tasksboxlist);
+void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task);
+void tasksboxlist_show_saved_tasks(GtkListBox *taskboxlist);
+void tasksboxlist_refresh(GtkListBox *tasksboxlist);
+
+gboolean rowTimeUpdateCallback(void *boxListRow);
 
 #endif

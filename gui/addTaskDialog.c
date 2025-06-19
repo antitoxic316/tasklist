@@ -83,7 +83,7 @@ void add_task_dialog_accept(GtkDialog *dialog){
 
     app_tasks = tasklist_append(app_tasks, new_task);
     g_object_set_data(G_OBJECT(tasksboxlist), "tasks", app_tasks);
-    tasksboxlist_refresh(GTK_WIDGET(tasksboxlist));
+    tasksboxlist_refresh(GTK_LIST_BOX(tasksboxlist));
 }
 
 Task *add_task_dialog_parse_task(GtkDialog *dialog){
@@ -113,14 +113,12 @@ Task *add_task_dialog_parse_task(GtkDialog *dialog){
 
   task_name = g_strdup(gtk_entry_buffer_get_text(task_name_entry_buffer));
   task_description = g_strdup(gtk_entry_buffer_get_text(task_description_entry_buffer));
-  task_deadline = parse_deadline(GTK_SPIN_BUTTON(task_time_entry), GTK_CALENDAR(task_day_entry));
+  task_deadline = parse_deadline_time(GTK_SPIN_BUTTON(task_time_entry), GTK_CALENDAR(task_day_entry));
 
   task = task_init();
   task_set_name(task, task_name);
   task_set_description(task, task_description);
   task_set_deadline(task, task_deadline);
-
-  printf("%d ::: %d\n", time(NULL), task_deadline);
 
   return task;
 }
