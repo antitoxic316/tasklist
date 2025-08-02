@@ -5,6 +5,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+/*
+  time_spinbutton_input and time_spinbutton_output 
+  functions were taken from gtk tutorial examples
+*/
+
 int time_spinbutton_input (GtkSpinButton *spin_button, double *new_val)
 {
   const char *text;

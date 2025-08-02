@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="TaskappEditTaskDialog" parent="GtkDialog">
+        <child>
+            <object id="contentArea" class="GtkBox">
+            <property name="orientation">horizontal</property>
+                <child>
+                    <object id="grid" class="GtkGrid">
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object id="taskNameLabel" class="GtkLabel">
+                                <property name="label">Task name: </property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">0</property>
+                                </layout>
+                            </object>  
+                        </child>
+                        <child>
+                            <object id="taskDescriptionLabel" class="GtkLabel">
+                                <property name="label">Description: </property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">1</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="taskTimeLabel" class="GtkLabel">
+                                <property name="label">Due to: </property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">2</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="taskNameInput" class = "GtkEntry">
+                                <property name="name">taskappNameInput</property>
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">0</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="taskDescriptionInput" class = "GtkEntry">
+                                <property name="name">taskDescriptionInput</property>
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">1</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="timeInputContainer" class = "GtkBox">
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">2</property>
+                                </layout>
+                                <child>
+                                    <object id="taskTimeInput" class="GtkSpinButton">
+                                        <property name="name">timeInput</property>
+                                        <signal name="input" handler="time_spinbutton_input"></signal>
+                                        <signal name="output" handler="time_spinbutton_output"></signal>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object id="calendarExpander" class = "GtkExpander">
+                                        <property name="name">calendarExpander</property>
+                                        <child>
+                                            <object id="taskDayInput" class = "GtkCalendar">
+                                                <property name="name">taskDayInput</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object id="buttonsBox" class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                            <object id="accept_button" class="GtkButton">
+                                <property name="label">Accept</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object id="reject_button" class="GtkButton">
+                                <property name="label">Reject</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <action-widgets>
+            <action-widget response="reject">reject_button</action-widget>
+            <action-widget response="accept" default="true">accept_button</action-widget>
+        </action-widgets>
+    </template>
+</interface>

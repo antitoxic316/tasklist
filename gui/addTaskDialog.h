@@ -3,12 +3,10 @@
 
 #include <gtk/gtk.h>
 
-#include "tasklist.h"
+#define TASKAPP_TYPE_ADD_TASK_DIALOG (taskapp_add_task_dialog_get_type())
 
-void add_task_dialog_init(GtkWindow *parent);
-void add_task_dialog_response_handler(GtkDialog *dialog, gint response_id);
-void add_task_dialog_accept(GtkDialog *dialog);
-void add_task_dialog_reject(GtkDialog *dialog);
-Task *add_task_dialog_parse_task(GtkDialog *dialog);
+G_DECLARE_FINAL_TYPE (TaskappAddTaskDialog, taskapp_add_task_dialog, TASKAPP, ADD_TASK_DIALOG, GtkDialog);
+
+GtkWidget *taskapp_add_task_dialog_new(GtkWindow *parent_win);
 
 #endif

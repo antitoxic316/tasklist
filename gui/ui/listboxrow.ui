@@ -44,6 +44,7 @@
                         <child>
                             <object id="propertiesButton" class="GtkButton">
                                 <property name="vexpand">1</property>
+                                <property name="label">Edit</property>
                             </object>
                         </child>
                     </object>

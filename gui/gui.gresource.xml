@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/antitoxic316/gui">
+    <file>ui/addtaskdialog.ui</file>
+    <file>ui/edittaskdialog.ui</file>
+  </gresource>
+</gresources>

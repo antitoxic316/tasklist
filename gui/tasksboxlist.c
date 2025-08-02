@@ -1,9 +1,16 @@
 #include "tasksboxlist.h"
 #include "utils.h"
 
+#include "editTaskDialog.h"
+
 #include "path_config.h"
 
 #include <string.h>
+
+struct edit_task_cb_data {
+  GtkWindow *prnt_win;
+  Task *t_ref;
+};
 
 void tasksboxlist_show_saved_tasks(GtkListBox *tasksboxlist){
   TaskList *tasks = g_object_get_data(G_OBJECT(tasksboxlist), "tasks");
@@ -15,6 +22,15 @@ void tasksboxlist_show_saved_tasks(GtkListBox *tasksboxlist){
   }
 }
 
+static 
+void on_edit_task_button_clicked(struct edit_task_cb_data *cb_data){
+  GtkWidget *dlg;
+  dlg = taskapp_edit_task_dialog_new(cb_data->prnt_win, cb_data->t_ref);
+  gtk_window_present(GTK_WINDOW(dlg));
+
+  free(cb_data);
+}
+
 void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task){
   GtkBuilder *builder;
   GtkListBoxRow *row;
@@ -22,6 +38,9 @@ void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task){
   GObject *task_deadline_label;
   GtkTextView *task_description_textview;
   GtkTextBuffer *task_description_textbuffer;
+  GtkWindow *parent_win;
+
+  GObject *editTaskButton;
 
   char *task_description = task_get_description(task);
 
@@ -32,8 +51,12 @@ void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task){
     return;
   }
 
+  parent_win = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(taskboxlist)));
+
   row = GTK_LIST_BOX_ROW(gtk_builder_get_object(builder, "tasklistBoxRow"));
   
+  editTaskButton = gtk_builder_get_object(builder, "propertiesButton");
+
   task_name_label = gtk_builder_get_object(builder, "taskName");
   task_deadline_label = gtk_builder_get_object(builder, "taskDeadline");
   
@@ -52,6 +75,13 @@ void tasksboxlist_show_task(GtkListBox *taskboxlist, Task *task){
 
   gtk_label_set_label(GTK_LABEL(task_name_label), task_get_name(task));
   gtk_label_set_label(GTK_LABEL(task_deadline_label), time_buff);
+
+  struct edit_task_cb_data *cb_data;
+  cb_data = malloc(sizeof(cb_data));
+  cb_data->prnt_win = parent_win;
+  cb_data->t_ref = task;
+
+  g_signal_connect_swapped(editTaskButton, "clicked", G_CALLBACK(on_edit_task_button_clicked), cb_data);
 
   gtk_list_box_append(GTK_LIST_BOX(taskboxlist), GTK_WIDGET(row));
   
@@ -93,4 +123,5 @@ gboolean tasksboxlist_TimeUpdateCallback(void *selfRef){
     gtk_label_set_label(GTK_LABEL(timeLabel), buf);
   }
 
+  return TRUE;
 }

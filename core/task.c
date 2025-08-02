@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
+#include <time.h>
 
 Task *task_init(){
     Task *new_task = malloc(sizeof(Task));
@@ -73,4 +75,16 @@ time_t task_get_deadline(Task *task){
 
 char *task_get_id(Task* task){
     return task->id;
+}
+
+void task_replace_data(Task *dest, Task *src){
+    free(dest->name);
+    dest->name = malloc(strlen(src->name)+1);
+    strcpy(dest->name, src->name);
+
+    free(dest->description);
+    dest->description = malloc(strlen(src->description)+1);
+    strcpy(dest->description, src->description);
+
+    dest->deadline = src->deadline;
 }

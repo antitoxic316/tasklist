@@ -5,12 +5,12 @@
 
 #define TASK_ID_LEN 16
 
-typedef struct task {
-    char *id;
+typedef struct _Task {
     time_t creation_time;
+    time_t deadline;
+    char *id;
     char *name;
     char *description;
-    time_t deadline;
 } Task;
 
 Task *task_init();
@@ -24,5 +24,8 @@ char *task_get_name(Task *task);
 char *task_get_description(Task *task);
 time_t task_get_deadline(Task *task); 
 time_t task_get_creation_time(Task *task); //
+
+//doesn't replace the id field
+void task_replace_data(Task *dest, Task *src);
 
 #endif

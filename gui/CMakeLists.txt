@@ -1,10 +1,50 @@
-add_library(gui 
+find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
+
+set(GRESOURCE_C   gui.gresource.c)
+set(GRESOURCE_XML gui.gresource.xml)
+set(UI_FILES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/addtaskdialog.ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/listboxrow.ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/mainwindow.ui
+)
+
+add_custom_command(
+    OUTPUT ${GRESOURCE_C}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${GLIB_COMPILE_RESOURCES}
+    ARGS
+        ${GRESOURCE_XML}
+        --target=${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C}
+        --generate-source
+    VERBATIM
+    MAIN_DEPENDENCY ${GRESOURCE_XML}
+    DEPENDS
+        ${UI_FILES}
+)
+
+# Step 3:
+add_custom_target(
+    gui-gresource
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C}
+)
+
+set_source_files_properties(
+    ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C}
+    PROPERTIES GENERATED TRUE
+)
+
+add_library(gui SHARED
+    ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C}
     utils.c 
     timeSpinButton.c
     addTaskDialog.c 
+    editTaskDialog.c
     tasksboxlist.c 
     mainwindow.c
 )
+
+add_dependencies(gui gui-gresource)
+
 
 include_directories(${CMAKE_SOURCE_DIR}/core)
 
