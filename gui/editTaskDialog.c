@@ -92,8 +92,8 @@ static void taskapp_edit_task_dialog_set_fields(TaskappEditTaskDialog *self, Tas
 
   struct tm date = *localtime(&t_ref->deadline);
 
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(self->taskTimeInput), date.tm_hour*date.tm_min);
-  gtk_calendar_set_year(cal, date.tm_year);
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(self->taskTimeInput), date.tm_hour*60+date.tm_min);
+  gtk_calendar_set_year(cal, date.tm_year + 1900);
   gtk_calendar_set_month(cal, date.tm_mon);
   gtk_calendar_set_day(cal, date.tm_mday);
 }
