@@ -10,7 +10,7 @@
   functions were taken from gtk tutorial examples
 */
 
-int time_spinbutton_input (GtkSpinButton *spin_button, double *new_val)
+int time_spinbutton_input (GtkSpinButton *spin_button, gdouble *new_val, gpointer user_data)
 {
   const char *text;
   char **str;
@@ -47,7 +47,7 @@ int time_spinbutton_input (GtkSpinButton *spin_button, double *new_val)
   return TRUE;
 }
 
-int time_spinbutton_output (GtkSpinButton *spin_button)
+int time_spinbutton_output (GtkSpinButton *spin_button, gpointer user_data)
 {
   GtkAdjustment *adjustment;
   char *buf;

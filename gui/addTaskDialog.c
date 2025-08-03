@@ -84,25 +84,40 @@ GtkWidget *taskapp_add_task_dialog_new(GtkWindow *parent_win){
 static void taskapp_add_task_dialog_class_init(TaskappAddTaskDialogClass *klass){
   GObjectClass *obj_class;
   GtkDialogClass *dlg_class;
+  GtkWidgetClass *wdg_class;
+  GtkBuilderScope *scope;
 
   obj_class = G_OBJECT_CLASS(klass);
-
   dlg_class = GTK_DIALOG_CLASS(klass);
+  wdg_class = GTK_WIDGET_CLASS(klass);
 
   dlg_class->response = taskapp_add_task_dialog_response_cb;
+
+  scope = gtk_builder_cscope_new();
+  gtk_builder_cscope_add_callback(scope, time_spinbutton_input);
+  gtk_builder_cscope_add_callback(scope, time_spinbutton_output);
 
   gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass), "/com/github/antitoxic316/gui/ui/addtaskdialog.ui");
   gtk_widget_class_bind_template_child(GTK_WIDGET_CLASS(klass), TaskappAddTaskDialog, taskNameInput);
   gtk_widget_class_bind_template_child(GTK_WIDGET_CLASS(klass), TaskappAddTaskDialog, taskDescriptionInput);
   gtk_widget_class_bind_template_child(GTK_WIDGET_CLASS(klass), TaskappAddTaskDialog, taskTimeInput);
   gtk_widget_class_bind_template_child(GTK_WIDGET_CLASS(klass), TaskappAddTaskDialog, taskDayInput);
+
+  gtk_widget_class_set_template_scope(wdg_class, scope);
 }
 
 static void taskapp_add_task_dialog_init(TaskappAddTaskDialog *self){
   gtk_widget_init_template(GTK_WIDGET(self));
+  
+  GtkSpinButton *time_spinbutton;
+  GtkAdjustment *adjustment;
+
+  time_spinbutton = GTK_SPIN_BUTTON(self->taskTimeInput);
+  adjustment = gtk_adjustment_new(1439.0, 0.0, 1439.0, 15.0, 60.0, 0.0);
+  gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(time_spinbutton), adjustment);
 
   gtk_window_set_modal(GTK_WINDOW(self), TRUE);
-  
+
   g_signal_connect_swapped(self,
                             "response",
                             G_CALLBACK (gtk_window_destroy),
